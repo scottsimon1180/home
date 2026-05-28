@@ -117,8 +117,12 @@ function createPanel(site, screenshots, iconUrl, index) {
        </div>`
     : '';
 
+  // fullDescription is pre-escaped, safe HTML written by editor.pyw: all text
+  // is HTML-escaped there and only <strong>/<em>/<u>/<s> tags are emitted, so it
+  // is injected as-is (not re-escaped) to render formatting. Exact whitespace
+  // (spaces/tabs/newlines) is preserved by `white-space: pre-wrap` in the CSS.
   const fullDescriptionHtml = site.fullDescription
-    ? `<p class="panel__full-description">${escapeHtml(site.fullDescription)}</p>`
+    ? `<p class="panel__full-description">${site.fullDescription}</p>`
     : '';
 
   panel.innerHTML = `
