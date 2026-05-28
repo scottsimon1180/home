@@ -32,8 +32,8 @@ window.WEBSITES = [
   {
     id: "3 gradient",
     name: "Gradient Generator",
-    shortDescription: "Design beautiful gradients and export them as high-quality PNGs.",
-    fullDescription: "Craft smooth, multi-stop gradients with precise control over colors, angles, and stops, then export them as crisp, high-resolution PNGs ready to drop into any project. A fast, no-fuss tool for backgrounds, wallpapers, and design assets.",
+    shortDescription: "Design smooth, industry-grade gradients and export them as high-quality PNGs.",
+    fullDescription: "• Adjust output resolution with support for up to 8K rendering\n• Fully customize gradient colors with advanced editing options\n• Adjust gradient angle and direction\n• Choose between linear and angular gradient\n• Export gradients losslessly in PNG format",
     link: "https://scottsimon1180.github.io/gradientGenerator",
     screenshots: 1,
   },
@@ -77,7 +77,7 @@ window.WEBSITES = [
   {
     id: "8 time",
     name: "Time Clock",
-    shortDescription: "",
+    shortDescription: "Track your hours worked throughout the day and calculate your earnings!",
     fullDescription: "",
     link: "https://scottsimon1180.github.io/timeClock/",
     screenshots: 1,

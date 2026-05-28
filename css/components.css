@@ -47,7 +47,10 @@
     background var(--t-base),
     padding var(--t-base);
   overflow: hidden;
-  animation: panel-enter 480ms var(--ease) backwards;
+  /* Hint the compositor so the hover lift promotes to its own layer up front,
+     avoiding a paint hitch on the first hover. */
+  will-change: transform;
+  animation: panel-enter 560ms var(--ease-out) backwards;
 }
 
 .panel:hover {
@@ -61,8 +64,8 @@
 }
 
 @keyframes panel-enter {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .panel__header {
@@ -164,7 +167,10 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  transition: grid-template-rows var(--t-expand), opacity var(--t-base);
+  /* Collapse baseline: content fades out promptly while the row shrinks. The
+     expand direction overrides this below to fade IN slightly after the row
+     starts opening, so content reveals with the height instead of popping. */
+  transition: grid-template-rows var(--t-expand), opacity 200ms var(--ease-out);
 }
 
 .panel__expanded-inner {
@@ -173,12 +179,27 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding-top: var(--space-5);
+  /* No top padding while collapsed: this element is the stretched grid item, so
+     with border-box any padding here becomes a floor the 0fr row can't shrink
+     past, leaving phantom height below every card. The spacing above the
+     expanded content is added back only in the expanded state. */
+  padding-top: 0;
+  /* Content drifts up slightly as the panel closes (and settles down as it
+     opens), so it recedes gracefully instead of being clipped flat by the
+     shrinking row. Paired with the row + opacity transitions below. */
+  transform: translateY(-8px);
+  transition: transform var(--t-expand), padding-top var(--t-expand);
 }
 
 .panel--expanded .panel__expanded-content {
   grid-template-rows: 1fr;
   opacity: 1;
+  transition: grid-template-rows var(--t-expand), opacity 320ms var(--ease-out) 120ms;
+}
+
+.panel--expanded .panel__expanded-inner {
+  transform: translateY(0);
+  padding-top: var(--space-5);
 }
 
 /* Applied only for a synchronous off-screen height measurement (see script.js). */
@@ -209,18 +230,27 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  display: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-overlay);
   color: var(--text-secondary);
+  /* Fade + scale in with the reveal rather than display-snapping. Hidden and
+     non-interactive while collapsed; the expanded state below switches it on. */
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
   transition: background var(--t-fast), color var(--t-fast),
-              transform var(--t-fast), box-shadow var(--t-fast);
+              transform var(--t-base), opacity var(--t-base), box-shadow var(--t-fast);
   z-index: 3;
 }
 
 .panel--expanded .panel__close {
-  display: inline-flex;
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  transition: background var(--t-fast), color var(--t-fast),
+              transform var(--t-base) 120ms, opacity var(--t-base) 120ms, box-shadow var(--t-fast);
 }
 
 .panel__close:hover {
@@ -250,6 +280,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   padding: var(--space-1) 0 var(--space-3);
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
@@ -351,7 +382,7 @@
   .panel--expanded .panel__name {
     font-size: 1.3125rem;
   }
-  .panel__expanded-inner {
+  .panel--expanded .panel__expanded-inner {
     padding-top: var(--space-4);
   }
   /* Roomier, thumb-friendly collapse target, lifted off the content. */
@@ -365,6 +396,10 @@
   .screenshot {
     height: 240px;
   }
+  /* Reorder: open button above the images (just below the header). */
+  .panel__expanded-inner .panel__actions { order: 0; }
+  .panel__expanded-inner .screenshots { order: 1; }
+  .panel__expanded-inner .panel__full-description { order: 2; }
 }
 
 /* ============================================================
@@ -373,6 +408,7 @@
 @media (prefers-reduced-motion: reduce) {
   .panel,
   .panel__expanded-content,
+  .panel__expanded-inner,
   .panel__icon-wrap,
   .panel__name,
   .panel__close,
@@ -381,5 +417,8 @@
   }
   .panel {
     animation: none;
+  }
+  .screenshots {
+    scroll-behavior: auto;
   }
 }

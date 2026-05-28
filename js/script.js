@@ -195,6 +195,22 @@ function measureExpandedHeight(panel) {
   return height;
 }
 
+// Mirror of measureExpandedHeight for the compact state. A transition-stripped,
+// width-matched clone reports the card's final collapsed height so the
+// post-collapse scroll target can be planned before the live panel finishes
+// shrinking (see collapsePanel).
+function measureCollapsedHeight(panel) {
+  const clone = panel.cloneNode(true);
+  clone.classList.remove('panel--expanded');
+  clone.classList.add('panel--measure');
+  clone.style.cssText +=
+    `;position:absolute;left:-9999px;top:0;visibility:hidden;pointer-events:none;width:${panel.offsetWidth}px`;
+  panel.parentNode.appendChild(clone);
+  const height = clone.offsetHeight;
+  clone.remove();
+  return height;
+}
+
 function expandPanel(panel) {
   document.querySelectorAll('.panel--expanded').forEach((p) => {
     if (p !== panel) collapsePanel(p);
@@ -208,11 +224,59 @@ function expandPanel(panel) {
   alignExpanded(panel, finalHeight);
 }
 
-// Collapsing is intentionally not scrolled: the panel's top edge is held in place
-// by the content above it, so the reveal simply shrinks from the bottom upward.
+// On desktop, collapsing is intentionally not scrolled: the panel's top edge is
+// held in place by the content above it, so the box simply shrinks from the
+// bottom upward.
+//
+// On mobile (single column) that alone feels chaotic. If you've scrolled down
+// into a long panel its top edge is off-screen above you, so the collapse
+// happens out of view and the cards below lurch up to fill the gap; and closing
+// the last card shortens the page so abruptly the browser snaps the scroll. So
+// here we coordinate a smooth scroll with the shrink, landing the just-closed
+// card calmly in view. The resting target depends on where the panel sits:
+//   - top edge already visible  -> collapse in place (no travel)
+//   - scrolled into the content -> bring its top to rest just under the edge
+//   - bottom of the list        -> settle at the new end instead of snapping
 function collapsePanel(panel) {
-  panel.classList.remove('panel--expanded');
   panel.setAttribute('aria-expanded', 'false');
+
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+  if (!isMobile || REDUCE_MOTION) {
+    panel.classList.remove('panel--expanded');
+    return;
+  }
+
+  const rect = panel.getBoundingClientRect();
+  // The panel's top edge keeps its document position through the collapse
+  // (nothing above it moves), so the final layout can be reasoned about now.
+  const panelTop = rect.top + window.scrollY;
+  const expandedHeight = panel.offsetHeight;
+  const collapsedHeight = measureCollapsedHeight(panel);
+
+  // Max scroll AFTER the page shortens. Targeting only a position that is valid
+  // in the shorter document means the browser never has to clamp — and snap —
+  // when the height transition finishes.
+  const finalDocHeight =
+    document.documentElement.scrollHeight - expandedHeight + collapsedHeight;
+  const finalMaxScroll = Math.max(0, finalDocHeight - window.innerHeight);
+
+  const MARGIN = 16;
+  let target;
+  if (rect.top < 0) {
+    // Top edge is above the fold: pull the card back so the close is visible.
+    target = panelTop - MARGIN;
+  } else {
+    // Top edge is visible: stay put and let it shrink in place. The clamp below
+    // still pulls up for the bottom-of-list case, where the current position
+    // won't survive the page shortening.
+    target = window.scrollY;
+  }
+  target = Math.max(0, Math.min(target, finalMaxScroll));
+
+  panel.classList.remove('panel--expanded');
+  if (Math.abs(target - window.scrollY) > 1) {
+    window.scrollTo({ top: target, behavior: 'smooth' });
+  }
 }
 
 // On mobile, open the panel centered in the viewport. Its top edge is stable in
