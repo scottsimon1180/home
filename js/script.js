@@ -195,9 +195,12 @@ function expandPanel(panel) {
   document.querySelectorAll('.panel--expanded').forEach((p) => {
     if (p !== panel) collapsePanel(p);
   });
-  const finalHeight = measureExpandedHeight(panel);
+  // Start the reveal FIRST: measuring before this (even on a clone) corrupts the
+  // grid-template-rows transition baseline and freezes the reveal at 0fr. Measuring
+  // afterward is safe — it only reads geometry, it doesn't restart the transition.
   panel.classList.add('panel--expanded');
   panel.setAttribute('aria-expanded', 'true');
+  const finalHeight = measureExpandedHeight(panel);
   alignExpanded(panel, finalHeight);
 }
 
