@@ -1,0 +1,24 @@
+# Ignore a specific file
+CLAUDE.md
+AGENTS.md
+sync.bat
+README.md
+
+# Ignore a specific folder
+.claude/
+
+# Ignore all files of a certain type
+*.psd
+*.ai
+*.py
+*.pyw
+
+# Ignore all files of a certain type inside a specific folder
+/*.png
+/*.jpg
+/*.ico
+/*.jpg
+/*.ini
+/*.inf
+/*.md
+/*.zip

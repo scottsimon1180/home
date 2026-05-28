@@ -1,0 +1,380 @@
+/* ============================================================
+   Theme toggle
+   ============================================================ */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition: transform var(--t-fast), background var(--t-fast),
+              color var(--t-fast), border-color var(--t-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle:hover {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  transform: rotate(15deg);
+}
+
+.theme-toggle:active {
+  transform: rotate(15deg) scale(0.94);
+}
+
+/* ============================================================
+   Panel (compact card)
+   ============================================================ */
+.panel {
+  position: relative;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--t-fast),
+    box-shadow var(--t-base),
+    border-color var(--t-fast),
+    background var(--t-base),
+    padding var(--t-base);
+  overflow: hidden;
+  animation: panel-enter 480ms var(--ease) backwards;
+}
+
+.panel:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+}
+
+.panel:active {
+  transform: translateY(-1px);
+}
+
+@keyframes panel-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.panel__icon-wrap {
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+  /* drop-shadow (not box-shadow) so the lift shadow follows the squircle,
+     not its bounding box. clip-path lives on the icon child below. */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
+  transition: width var(--t-base), height var(--t-base);
+}
+
+.panel__icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: url(#squircle-clip);
+  background: var(--bg-overlay);
+}
+
+.panel__icon--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--accent-text);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  font-size: 1.75rem;
+  width: 100%;
+  height: 100%;
+}
+
+.panel__title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel__name {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+  transition: font-size var(--t-base);
+}
+
+.panel__description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Panel (expanded state)
+   ============================================================ */
+.panel--expanded {
+  grid-column: 1 / -1;
+  cursor: default;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-strong);
+}
+
+.panel--expanded:hover {
+  transform: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.panel--expanded .panel__icon-wrap {
+  width: 86px;
+  height: 86px;
+}
+
+.panel--expanded .panel__icon--fallback {
+  font-size: 2.25rem;
+}
+
+.panel--expanded .panel__name {
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+/* Reveal driven by grid-template-rows 0fr -> 1fr: animates open AND close,
+   keeps the content in the DOM (no display:none snap), and lets the inner
+   wrapper clip itself as the row track grows/shrinks. */
+.panel__expanded-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows var(--t-expand), opacity var(--t-base);
+}
+
+.panel__expanded-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+}
+
+.panel--expanded .panel__expanded-content {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* Applied only for a synchronous off-screen height measurement (see script.js). */
+.panel--measure,
+.panel--measure * {
+  transition: none !important;
+}
+
+.panel__full-description {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 72ch;
+}
+
+/* ============================================================
+   Close button (only visible when expanded)
+   ============================================================ */
+.panel__close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-overlay);
+  color: var(--text-secondary);
+  transition: background var(--t-fast), color var(--t-fast),
+              transform var(--t-fast), box-shadow var(--t-fast);
+  z-index: 3;
+}
+
+.panel--expanded .panel__close {
+  display: inline-flex;
+}
+
+.panel__close:hover {
+  background: var(--border-strong);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.panel__close:active {
+  transform: translateY(-1px) scale(0.92);
+}
+
+.panel__close svg {
+  transition: transform var(--t-fast);
+}
+
+.panel__close:hover svg {
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   Screenshots (horizontal scroll strip)
+   ============================================================ */
+.screenshots {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  padding: var(--space-1) 0 var(--space-3);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.screenshots::-webkit-scrollbar {
+  height: 6px;
+}
+.screenshots::-webkit-scrollbar-track {
+  background: transparent;
+}
+.screenshots::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+
+.screenshot {
+  height: 320px;
+  width: auto;
+  max-width: none;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  scroll-snap-align: start;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  object-fit: cover;
+  background: var(--bg-overlay);
+}
+
+/* ============================================================
+   Open button
+   ============================================================ */
+.panel__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.panel__open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--accent);
+  color: var(--accent-text);
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  transition: background var(--t-fast), transform var(--t-fast),
+              box-shadow var(--t-base);
+  box-shadow:
+    0 4px 12px var(--accent-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.panel__open:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 20px var(--accent-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.panel__open:active {
+  transform: translateY(0);
+}
+
+.panel__open svg {
+  transition: transform var(--t-fast);
+}
+
+.panel__open:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* ============================================================
+   Mobile adjustments
+   ============================================================ */
+@media (max-width: 640px) {
+  .panel {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+  .panel--expanded {
+    padding: var(--space-5);
+  }
+  .panel__icon-wrap {
+    width: 54px;
+    height: 54px;
+  }
+  .panel--expanded .panel__icon-wrap {
+    width: 72px;
+    height: 72px;
+  }
+  .panel--expanded .panel__name {
+    font-size: 1.3125rem;
+  }
+  .panel__expanded-inner {
+    padding-top: var(--space-4);
+  }
+  /* Roomier, thumb-friendly collapse target, lifted off the content. */
+  .panel__close {
+    width: 40px;
+    height: 40px;
+    top: var(--space-3);
+    right: var(--space-3);
+    box-shadow: var(--shadow-sm);
+  }
+  .screenshot {
+    height: 240px;
+  }
+}
+
+/* ============================================================
+   Reduced motion — collapse instantly, no scaling/sliding
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel__expanded-content,
+  .panel__icon-wrap,
+  .panel__name,
+  .panel__close,
+  .panel__close svg {
+    transition-duration: 0.01ms;
+  }
+  .panel {
+    animation: none;
+  }
+}
