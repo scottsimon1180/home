@@ -28,6 +28,28 @@
 }
 
 /* ============================================================
+   Focus — visible keyboard rings only (suppressed for mouse/touch)
+   ============================================================ */
+.panel:focus,
+.theme-toggle:focus,
+.panel__open:focus,
+.panel__close:focus {
+  outline: none;
+}
+
+.panel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.theme-toggle:focus-visible,
+.panel__open:focus-visible,
+.panel__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
    Panel (compact card)
    ============================================================ */
 .panel {
@@ -130,6 +152,15 @@
   overflow: hidden;
 }
 
+/* Mobile-expanded extras — hidden everywhere by default. The descendant
+   selectors keep these winning over the base .panel__open / .panel__description
+   rules regardless of source order; the mobile media query reveals them. */
+.panel__title-block .panel__open--header,
+.panel__expanded-inner .panel__description--expanded,
+.screenshots__label {
+  display: none;
+}
+
 /* ============================================================
    Panel (expanded state)
    ============================================================ */
@@ -167,10 +198,16 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
+  /* Removed from the tab order + a11y tree while collapsed, so keyboard focus
+     never lands on the hidden Open link inside a collapsed card. Visibility
+     flips back to hidden only after the collapse finishes (the delay) so the
+     content doesn't blink out mid-shrink. */
+  visibility: hidden;
   /* Collapse baseline: content fades out promptly while the row shrinks. The
      expand direction overrides this below to fade IN slightly after the row
      starts opening, so content reveals with the height instead of popping. */
-  transition: grid-template-rows var(--t-expand), opacity 200ms var(--ease-out);
+  transition: grid-template-rows var(--t-expand), opacity 200ms var(--ease-out),
+              visibility 0s linear var(--t-expand);
 }
 
 .panel__expanded-inner {
@@ -194,18 +231,14 @@
 .panel--expanded .panel__expanded-content {
   grid-template-rows: 1fr;
   opacity: 1;
-  transition: grid-template-rows var(--t-expand), opacity 320ms var(--ease-out) 120ms;
+  visibility: visible;
+  transition: grid-template-rows var(--t-expand), opacity 320ms var(--ease-out) 120ms,
+              visibility 0s;
 }
 
 .panel--expanded .panel__expanded-inner {
   transform: translateY(0);
   padding-top: var(--space-5);
-}
-
-/* Applied only for a synchronous off-screen height measurement (see script.js). */
-.panel--measure,
-.panel--measure * {
-  transition: none !important;
 }
 
 .panel__full-description {
@@ -236,12 +269,15 @@
   background: var(--bg-overlay);
   color: var(--text-secondary);
   /* Fade + scale in with the reveal rather than display-snapping. Hidden and
-     non-interactive while collapsed; the expanded state below switches it on. */
+     non-interactive (and out of the tab order) while collapsed; the expanded
+     state below switches it on. */
   opacity: 0;
   transform: scale(0.8);
   pointer-events: none;
+  visibility: hidden;
   transition: background var(--t-fast), color var(--t-fast),
-              transform var(--t-base), opacity var(--t-base), box-shadow var(--t-fast);
+              transform var(--t-base), opacity var(--t-base), box-shadow var(--t-fast),
+              visibility 0s linear var(--t-base);
   z-index: 3;
 }
 
@@ -249,8 +285,10 @@
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
+  visibility: visible;
   transition: background var(--t-fast), color var(--t-fast),
-              transform var(--t-base) 120ms, opacity var(--t-base) 120ms, box-shadow var(--t-fast);
+              transform var(--t-base) 120ms, opacity var(--t-base) 120ms, box-shadow var(--t-fast),
+              visibility 0s;
 }
 
 .panel__close:hover {
@@ -299,16 +337,77 @@
 }
 
 .screenshot {
-  height: 320px;
-  width: auto;
-  max-width: none;
+  position: relative;
+  display: block;
   flex-shrink: 0;
-  border-radius: var(--radius-md);
+  padding: 0;
+  /* Softened, not pill-round — a restrained radius reads more like a product
+     shot than a sticker. */
+  border-radius: var(--radius-sm);
   scroll-snap-align: start;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-  object-fit: cover;
   background: var(--bg-overlay);
+  overflow: hidden;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--t-fast), transform var(--t-fast);
+}
+
+.screenshot__img {
+  display: block;
+  height: 320px;
+  width: auto;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* Hover scrim grounds the floating zoom badge. */
+.screenshot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(155deg, transparent 55%, rgba(12, 9, 7, 0.32));
+  opacity: 0;
+  transition: opacity var(--t-base);
+  pointer-events: none;
+}
+
+.screenshot:hover { border-color: var(--border-strong); }
+.screenshot:hover::after { opacity: 1; }
+.screenshot:active { transform: scale(0.985); }
+
+.screenshot__zoom {
+  position: absolute;
+  bottom: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  color: #fff;
+  background: rgba(18, 15, 13, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: scale(0.82) translateY(4px);
+  transition: opacity var(--t-base), transform var(--t-base);
+  pointer-events: none;
+}
+
+.screenshot:hover .screenshot__zoom,
+.screenshot:focus-visible .screenshot__zoom {
+  opacity: 1;
+  transform: none;
+}
+
+.screenshot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* ============================================================
@@ -361,6 +460,224 @@
 }
 
 /* ============================================================
+   Screenshot lightbox — warm full-screen gallery
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--t-base), visibility 0s linear var(--t-base);
+}
+.lightbox--open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity var(--t-base), visibility 0s;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--lb-backdrop);
+  -webkit-backdrop-filter: blur(22px) saturate(118%);
+  backdrop-filter: blur(22px) saturate(118%);
+}
+
+/* Frosted control base — shared by the close button and nav arrows. */
+.lightbox__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lb-ctrl-text);
+  background: var(--lb-ctrl);
+  border: 1px solid var(--lb-ctrl-border);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: background var(--t-fast), transform var(--t-fast), opacity var(--t-base);
+}
+.lightbox__btn:hover { background: var(--lb-ctrl-hover); }
+.lightbox__btn:active { transform: scale(0.92); }
+.lightbox__btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---- top bar ---- */
+.lightbox__bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: calc(var(--space-4) + env(safe-area-inset-top, 0px)) var(--space-4) var(--space-3);
+  /* Eases in just behind the artwork. */
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity var(--t-base) 80ms, transform var(--t-base) 80ms;
+}
+.lightbox--open .lightbox__bar {
+  opacity: 1;
+  transform: none;
+}
+.lightbox__counter {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.06em;
+  color: var(--lb-ctrl-text);
+  padding: 8px 15px;
+  border-radius: var(--radius-pill);
+  background: var(--lb-ctrl);
+  border: 1px solid var(--lb-ctrl-border);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-variant-numeric: tabular-nums;
+}
+.lightbox__close {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin-left: auto; /* stays right even when the counter is hidden (single shot) */
+}
+
+/* ---- stage + swipe track ---- */
+.lightbox__stage {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  /* Entrance: the artwork rises + scales in. */
+  opacity: 0;
+  transform: scale(0.93) translateY(12px);
+  transition: opacity var(--t-slow), transform var(--t-slow);
+}
+.lightbox--open .lightbox__stage {
+  opacity: 1;
+  transform: none;
+}
+
+.lightbox__track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* Allow a 1-finger horizontal swipe; suppress the browser's own pinch-zoom so
+     our pointer handlers own it. */
+  touch-action: pan-x;
+}
+.lightbox__track::-webkit-scrollbar { display: none; }
+
+.lightbox__slide {
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  cursor: zoom-in;
+  transform-origin: center center;
+  will-change: transform;
+}
+/* Programmatic zoom (double-tap / wheel / reset) eases; live gestures stay 1:1. */
+.lightbox__img.is-animating { transition: transform var(--t-base); }
+
+/* Zoomed: lock the swipe track so a drag pans the image instead of paging. */
+.lightbox--zoomed .lightbox__track {
+  overflow: hidden;
+  scroll-snap-type: none;
+}
+.lightbox--zoomed .lightbox__img {
+  touch-action: none;
+  cursor: grab;
+}
+
+/* ---- nav arrows (pointer devices) ---- */
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  z-index: 2;
+}
+.lightbox__nav--prev { left: var(--space-4); }
+.lightbox__nav--next { right: var(--space-4); }
+.lightbox__nav:active { transform: translateY(-50%) scale(0.92); }
+.lightbox__nav:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- page dots ---- */
+.lightbox__dots {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--t-base) 80ms, transform var(--t-base) 80ms;
+}
+.lightbox--open .lightbox__dots {
+  opacity: 1;
+  transform: none;
+}
+.lightbox__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--lb-dot);
+  transition: width var(--t-base), background var(--t-fast);
+}
+.lightbox__dot:hover { background: rgba(255, 255, 255, 0.55); }
+.lightbox__dot.is-active {
+  width: 22px;
+  background: var(--accent);
+}
+.lightbox__dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---- single screenshot: no nav, dots, or counter ---- */
+.lightbox--single .lightbox__nav,
+.lightbox--single .lightbox__dots,
+.lightbox--single .lightbox__counter {
+  display: none;
+}
+
+/* Touch / small screens: swipe + dots instead of edge arrows. */
+@media (hover: none), (max-width: 640px) {
+  .lightbox__nav { display: none; }
+}
+
+/* ============================================================
    Mobile adjustments
    ============================================================ */
 @media (max-width: 640px) {
@@ -393,13 +710,75 @@
     right: var(--space-3);
     box-shadow: var(--shadow-sm);
   }
-  .screenshot {
-    height: 240px;
+
+  /* ----- App Store-style expanded layout (mobile only) ----- */
+
+  /* Header: the short description gives way to an Open button under the title. */
+  .panel--expanded .panel__title-block > .panel__description {
+    display: none;
   }
-  /* Reorder: open button above the images (just below the header). */
-  .panel__expanded-inner .panel__actions { order: 0; }
-  .panel__expanded-inner .screenshots { order: 1; }
+  .panel--expanded .panel__title-block .panel__open--header {
+    display: inline-flex;
+    margin-top: var(--space-3);
+    padding: 9px 22px;
+    font-size: 0.875rem;
+  }
+
+  /* The short description, relocated below the header / above the preview,
+     shown in full (no two-line clamp). */
+  .panel--expanded .panel__expanded-inner .panel__description--expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+  }
+
+  /* The bottom Open button is redundant once it lives in the header. */
+  .panel__expanded-inner .panel__actions {
+    display: none;
+  }
+
+  /* Stack order: description → preview → full description. */
+  .panel__expanded-inner .panel__description--expanded { order: 0; }
+  .panel__expanded-inner .screenshots-block { order: 1; }
   .panel__expanded-inner .panel__full-description { order: 2; }
+
+  /* ----- Preview carousel ----- */
+  .panel--expanded .screenshots__label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+  .screenshots {
+    gap: var(--space-3);
+    padding: var(--space-1) 0 var(--space-3);
+    /* Swipe-driven on touch — drop the scrollbar for a cleaner strip. */
+    scrollbar-width: none;
+  }
+  .screenshots::-webkit-scrollbar {
+    display: none;
+  }
+  .screenshot {
+    border-radius: var(--radius-sm);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .screenshot__img {
+    height: 300px;
+  }
+  /* No hover on touch — keep the tap-to-enlarge cue always visible. */
+  .screenshot__zoom {
+    opacity: 1;
+    transform: none;
+    width: 30px;
+    height: 30px;
+  }
 }
 
 /* ============================================================
@@ -414,11 +793,31 @@
   .panel__close,
   .panel__close svg {
     transition-duration: 0.01ms;
+    /* Zero the visibility hide-delay too, so collapsed content leaves the tab
+       order immediately instead of lingering for the (now-skipped) animation. */
+    transition-delay: 0s;
   }
   .panel {
     animation: none;
   }
   .screenshots {
+    scroll-behavior: auto;
+  }
+  .lightbox,
+  .lightbox__stage,
+  .lightbox__bar,
+  .lightbox__dots,
+  .lightbox__img,
+  .screenshot,
+  .screenshot::after,
+  .screenshot__zoom {
+    transition-duration: 0.01ms;
+    transition-delay: 0s;
+  }
+  .lightbox__stage {
+    transform: none;
+  }
+  .lightbox__track {
     scroll-behavior: auto;
   }
 }

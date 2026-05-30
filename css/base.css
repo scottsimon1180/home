@@ -28,6 +28,9 @@ body {
   transition: background-color var(--t-base), color var(--t-base);
   position: relative;
   overflow-x: hidden;
+  /* Suppress the grey/blue flash on tap — every interactive element already has
+     its own :active state. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Subtle grain texture for warmth */

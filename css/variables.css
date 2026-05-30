@@ -28,4 +28,14 @@
   --t-expand: 500ms var(--ease-out);
 
   --container-max: 1240px;
+
+  /* Screenshot lightbox — intentionally theme-constant: the viewer stays a deep
+     warm charcoal in both light and dark so the artwork pops. Only the active
+     page dot borrows the live --accent. */
+  --lb-backdrop: rgba(18, 15, 13, 0.86);
+  --lb-ctrl: rgba(255, 255, 255, 0.10);
+  --lb-ctrl-hover: rgba(255, 255, 255, 0.18);
+  --lb-ctrl-border: rgba(255, 255, 255, 0.16);
+  --lb-ctrl-text: #F7F4EF;
+  --lb-dot: rgba(255, 255, 255, 0.30);
 }

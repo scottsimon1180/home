@@ -1,0 +1,13 @@
+{
+  "name": "Scott's Apps",
+  "short_name": "Scott's Apps",
+  "icons": [
+    {
+      "src": "assets/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "display": "standalone"
+}

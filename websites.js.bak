@@ -40,11 +40,11 @@ window.WEBSITES = [
 
   {
     id: "4 binary",
-    name: "Binary Code Converter",
+    name: "Binary Converter",
     shortDescription: "Convert text to binary and back again in an instant.",
     fullDescription: "Translate plain text into binary code and decode binary back into readable text in real time. A clean, straightforward converter for learning how characters map to bits, debugging encodings, or just having fun with 1s and 0s.",
     link: "https://scottsimon1180.github.io/binary",
-    screenshots: 1,
+    screenshots: 4,
   },
 
   {
@@ -86,10 +86,18 @@ window.WEBSITES = [
   {
     id: "9 imageComparer",
     name: "Image Comparer",
+    shortDescription: "Compare two same size images pixel-by-pixel.",
+    fullDescription: "Pixel Compare is a mobile-friendly web app that performs frame-accurate, pixel-by-pixel comparison of two same-resolution images.\n\n-Render a live color-coded difference map\n-View precision stats showing divergent and convergent pixel counts as well as percentages.",
+    link: "https://scottsimon1180.github.io/imageComparer",
+  },
+
+  {
+    id: "10 svgOptimizer",
+    name: "SVG Optimizer",
     shortDescription: "",
     fullDescription: "",
-    link: "https://scottsimon1180.github.io/imageComparer",
-    screenshots: 1,
+    link: "https://scottsimon1180.github.io/svgOptimizer",
+    screenshots: 8,
   },
 
 ];
