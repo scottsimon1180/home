@@ -75,12 +75,12 @@ window.WEBSITES = [
   },
 
   {
-    id: "8 time",
-    name: "Time Clock",
-    shortDescription: "Track your hours worked throughout the day and calculate your earnings!",
+    id: "8 iconTester",
+    name: "Icon Tester",
+    shortDescription: "",
     fullDescription: "",
-    link: "https://scottsimon1180.github.io/timeClock/",
-    screenshots: 1,
+    link: "https://scottsimon1180.github.io/iconTester",
+    screenshots: 2,
   },
 
   {
@@ -101,20 +101,20 @@ window.WEBSITES = [
   },
 
   {
-    id: "11 iconTester",
-    name: "Icon Tester",
-    shortDescription: "",
-    fullDescription: "",
-    link: "https://scottsimon1180.github.io/iconTester",
-    screenshots: 2,
-  },
-
-  {
-    id: "12 UTCconverter",
+    id: "11 UTCconverter",
     name: "UTC to CST Converter",
     shortDescription: "Quickly convert UTC to CST. Useful for Claude Status Page",
     fullDescription: "",
     link: "https://scottsimon1180.github.io/UTCconverter",
+    screenshots: 1,
+  },
+
+  {
+    id: "12 time",
+    name: "Time Clock",
+    shortDescription: "Track your hours worked throughout the day and calculate your earnings!",
+    fullDescription: "",
+    link: "https://scottsimon1180.github.io/timeClock/",
     screenshots: 1,
   },
 
