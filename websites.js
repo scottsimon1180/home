@@ -109,4 +109,12 @@ window.WEBSITES = [
     screenshots: 2,
   },
 
+  {
+    id: "12 UTCconverter",
+    name: "UTC to CST Converter",
+    shortDescription: "Quickly convert UTC to CST. Useful for Claude Status Page",
+    fullDescription: "",
+    link: "https://scottsimon1180.github.io/UTCconverter",
+  },
+
 ];

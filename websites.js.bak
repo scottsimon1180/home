@@ -94,7 +94,7 @@ window.WEBSITES = [
   {
     id: "10 svgOptimizer",
     name: "SVG Optimizer",
-    shortDescription: "",
+    shortDescription: "Simple SVG Optimizer",
     fullDescription: "",
     link: "https://scottsimon1180.github.io/svgOptimizer",
     screenshots: 8,
@@ -107,6 +107,14 @@ window.WEBSITES = [
     fullDescription: "",
     link: "https://scottsimon1180.github.io/iconTester",
     screenshots: 2,
+  },
+
+  {
+    id: "12 new-website",
+    name: "New Website",
+    shortDescription: "",
+    fullDescription: "",
+    link: "",
   },
 
 ];
