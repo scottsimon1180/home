@@ -115,6 +115,7 @@ window.WEBSITES = [
     shortDescription: "Quickly convert UTC to CST. Useful for Claude Status Page",
     fullDescription: "",
     link: "https://scottsimon1180.github.io/UTCconverter",
+    screenshots: 1,
   },
 
 ];

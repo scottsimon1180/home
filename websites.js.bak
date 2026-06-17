@@ -110,11 +110,12 @@ window.WEBSITES = [
   },
 
   {
-    id: "12 new-website",
-    name: "New Website",
-    shortDescription: "",
+    id: "12 UTCconverter",
+    name: "UTC to CST Converter",
+    shortDescription: "Quickly convert UTC to CST. Useful for Claude Status Page",
     fullDescription: "",
-    link: "",
+    link: "https://scottsimon1180.github.io/UTCconverter",
+    screenshots: 1,
   },
 
 ];
