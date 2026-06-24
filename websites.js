@@ -39,7 +39,15 @@ window.WEBSITES = [
   },
 
   {
-    id: "4 binary",
+    id: "4 imageDeck",
+    name: "Image Deck",
+    shortDescription: "",
+    fullDescription: "",
+    link: "https://scottsimon1180.github.io/imageDeck",
+  },
+
+  {
+    id: "5 binary",
     name: "Binary Converter",
     shortDescription: "Convert text to binary and back again in an instant.",
     fullDescription: "Translate plain text into binary code and decode binary back into readable text in real time. A clean, straightforward converter for learning how characters map to bits, debugging encodings, or just having fun with 1s and 0s.",
@@ -48,7 +56,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "5 picker",
+    id: "6 picker",
     name: "Color Picker",
     shortDescription: "An iOS-style color picker for grabbing and converting colors with ease.",
     fullDescription: "Pick colors through a familiar iOS-inspired interface and instantly read their values across HEX, RGB, and HSL. Whether you're matching an existing palette or sampling a single shade, it makes capturing and converting colors quick and intuitive.",
@@ -57,7 +65,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "6 prompt",
+    id: "7 prompt",
     name: "Prompt - Text Editor",
     shortDescription: "A clean, distraction-free text editor built for focused writing.",
     fullDescription: "Prompt is a minimal, keyboard-friendly text editor that strips away the clutter so you can concentrate on the words. With a calm interface and quiet focus, it's built for drafting, note-taking, and writing without interruption.",
@@ -66,7 +74,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "7 htmlTester",
+    id: "8 htmlTester",
     name: "HTML Viewer",
     shortDescription: "Paste and preview HTML projects instantly in a live sandbox.",
     fullDescription: "Test and preview your HTML, CSS, and JavaScript in a self-contained sandbox without setting up a project or a server. Paste your code and watch it render live — perfect for quick experiments, snippets, and debugging on the fly.",
@@ -75,7 +83,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "8 iconTester",
+    id: "9 iconTester",
     name: "Icon Tester",
     shortDescription: "",
     fullDescription: "",
@@ -84,7 +92,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "9 imageComparer",
+    id: "10 imageComparer",
     name: "Image Comparer",
     shortDescription: "Compare two same size images pixel-by-pixel.",
     fullDescription: "Pixel Compare is a mobile-friendly web app that performs frame-accurate, pixel-by-pixel comparison of two same-resolution images.\n\n-Render a live color-coded difference map\n-View precision stats showing divergent and convergent pixel counts as well as percentages.",
@@ -92,7 +100,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "10 svgOptimizer",
+    id: "11 svgOptimizer",
     name: "SVG Optimizer",
     shortDescription: "Simple SVG Optimizer",
     fullDescription: "",
@@ -101,7 +109,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "11 UTCconverter",
+    id: "12 UTCconverter",
     name: "UTC to CST Converter",
     shortDescription: "Quickly convert UTC to CST. Useful for Claude Status Page",
     fullDescription: "",
@@ -110,7 +118,7 @@ window.WEBSITES = [
   },
 
   {
-    id: "12 time",
+    id: "13 time",
     name: "Time Clock",
     shortDescription: "Track your hours worked throughout the day and calculate your earnings!",
     fullDescription: "",

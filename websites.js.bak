@@ -75,7 +75,16 @@ window.WEBSITES = [
   },
 
   {
-    id: "8 imageComparer",
+    id: "8 iconTester",
+    name: "Icon Tester",
+    shortDescription: "",
+    fullDescription: "",
+    link: "https://scottsimon1180.github.io/iconTester",
+    screenshots: 2,
+  },
+
+  {
+    id: "9 imageComparer",
     name: "Image Comparer",
     shortDescription: "Compare two same size images pixel-by-pixel.",
     fullDescription: "Pixel Compare is a mobile-friendly web app that performs frame-accurate, pixel-by-pixel comparison of two same-resolution images.\n\n-Render a live color-coded difference map\n-View precision stats showing divergent and convergent pixel counts as well as percentages.",
@@ -83,21 +92,12 @@ window.WEBSITES = [
   },
 
   {
-    id: "9 svgOptimizer",
+    id: "10 svgOptimizer",
     name: "SVG Optimizer",
     shortDescription: "Simple SVG Optimizer",
     fullDescription: "",
     link: "https://scottsimon1180.github.io/svgOptimizer",
     screenshots: 8,
-  },
-
-  {
-    id: "10 iconTester",
-    name: "Icon Tester",
-    shortDescription: "",
-    fullDescription: "",
-    link: "https://scottsimon1180.github.io/iconTester",
-    screenshots: 2,
   },
 
   {
@@ -116,6 +116,14 @@ window.WEBSITES = [
     fullDescription: "",
     link: "https://scottsimon1180.github.io/timeClock/",
     screenshots: 1,
+  },
+
+  {
+    id: "13 imageDeck",
+    name: "Image Deck",
+    shortDescription: "",
+    fullDescription: "",
+    link: "https://scottsimon1180.github.io/imageDeck",
   },
 
 ];
